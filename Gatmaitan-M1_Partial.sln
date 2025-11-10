@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatmaitan-M1_Partial", "Gatmaitan-M1_Partial\Gatmaitan-M1_Partial.csproj", "{3AC66CF7-57FE-4ABB-A6FC-3936402CDD9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatmaitan_M1_Client", "Gatmaitan_M1_Client\Gatmaitan_M1_Client.csproj", "{464B47A0-0FF4-48A0-8F86-73727BF73F09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3AC66CF7-57FE-4ABB-A6FC-3936402CDD9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AC66CF7-57FE-4ABB-A6FC-3936402CDD9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AC66CF7-57FE-4ABB-A6FC-3936402CDD9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AC66CF7-57FE-4ABB-A6FC-3936402CDD9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{464B47A0-0FF4-48A0-8F86-73727BF73F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{464B47A0-0FF4-48A0-8F86-73727BF73F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{464B47A0-0FF4-48A0-8F86-73727BF73F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{464B47A0-0FF4-48A0-8F86-73727BF73F09}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE38105B-398F-4CE2-83EB-A204D212204B}
+	EndGlobalSection
+EndGlobal
