@@ -1,4 +1,8 @@
-﻿namespace Gatmaitan_M1_Client
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Gatmaitan_M1_Client
 {
     partial class Forms
     {
@@ -43,10 +47,25 @@
             tabPageInventory = new TabPage();
             tabPageOrdering = new TabPage();
             tabPageShipping = new TabPage();
+            labelOrderItemCode = new Label();
+            txtOrderItemCode = new TextBox();
+            labelOrderItemName = new Label();
+            textBox1 = new TextBox();
+            labelOrderedBy = new Label();
+            txtOrderedBy = new TextBox();
+            labelOrderQuantity = new Label();
+            txtOrderQuantity = new TextBox();
+            textBox2 = new TextBox();
+            labelOrderUnitPrice = new Label();
+            dgvOrders = new DataGridView();
+            labelOrderTitle = new Label();
+            groupBoxOrderDetails = new GroupBox();
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
             groupBox1.SuspendLayout();
             tabControlMain.SuspendLayout();
             tabPageInventory.SuspendLayout();
+            tabPageOrdering.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
             SuspendLayout();
             // 
             // dgvItems
@@ -326,6 +345,19 @@
             // 
             // tabPageOrdering
             // 
+            tabPageOrdering.Controls.Add(groupBoxOrderDetails);
+            tabPageOrdering.Controls.Add(labelOrderTitle);
+            tabPageOrdering.Controls.Add(dgvOrders);
+            tabPageOrdering.Controls.Add(labelOrderUnitPrice);
+            tabPageOrdering.Controls.Add(textBox2);
+            tabPageOrdering.Controls.Add(txtOrderQuantity);
+            tabPageOrdering.Controls.Add(labelOrderQuantity);
+            tabPageOrdering.Controls.Add(txtOrderedBy);
+            tabPageOrdering.Controls.Add(labelOrderedBy);
+            tabPageOrdering.Controls.Add(textBox1);
+            tabPageOrdering.Controls.Add(labelOrderItemName);
+            tabPageOrdering.Controls.Add(txtOrderItemCode);
+            tabPageOrdering.Controls.Add(labelOrderItemCode);
             tabPageOrdering.Location = new Point(4, 34);
             tabPageOrdering.Name = "tabPageOrdering";
             tabPageOrdering.Padding = new Padding(3);
@@ -339,10 +371,117 @@
             tabPageShipping.Location = new Point(4, 34);
             tabPageShipping.Name = "tabPageShipping";
             tabPageShipping.Padding = new Padding(3);
-            tabPageShipping.Size = new Size(1054, 445);
+            tabPageShipping.Size = new Size(1126, 488);
             tabPageShipping.TabIndex = 2;
             tabPageShipping.Text = "Shipping";
             tabPageShipping.UseVisualStyleBackColor = true;
+            // 
+            // labelOrderItemCode
+            // 
+            labelOrderItemCode.AutoSize = true;
+            labelOrderItemCode.Location = new Point(636, 17);
+            labelOrderItemCode.Name = "labelOrderItemCode";
+            labelOrderItemCode.Size = new Size(99, 25);
+            labelOrderItemCode.TabIndex = 0;
+            labelOrderItemCode.Text = "Item Code:";
+            // 
+            // txtOrderItemCode
+            // 
+            txtOrderItemCode.Location = new Point(748, 17);
+            txtOrderItemCode.Name = "txtOrderItemCode";
+            txtOrderItemCode.Size = new Size(330, 31);
+            txtOrderItemCode.TabIndex = 1;
+            // 
+            // labelOrderItemName
+            // 
+            labelOrderItemName.AutoSize = true;
+            labelOrderItemName.Location = new Point(636, 60);
+            labelOrderItemName.Name = "labelOrderItemName";
+            labelOrderItemName.Size = new Size(104, 25);
+            labelOrderItemName.TabIndex = 2;
+            labelOrderItemName.Text = "Item Name:";
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(748, 60);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(330, 31);
+            textBox1.TabIndex = 3;
+            // 
+            // labelOrderedBy
+            // 
+            labelOrderedBy.AutoSize = true;
+            labelOrderedBy.Location = new Point(636, 106);
+            labelOrderedBy.Name = "labelOrderedBy";
+            labelOrderedBy.Size = new Size(106, 25);
+            labelOrderedBy.TabIndex = 4;
+            labelOrderedBy.Text = "Ordered By:";
+            // 
+            // txtOrderedBy
+            // 
+            txtOrderedBy.Location = new Point(748, 106);
+            txtOrderedBy.Name = "txtOrderedBy";
+            txtOrderedBy.Size = new Size(330, 31);
+            txtOrderedBy.TabIndex = 5;
+            // 
+            // labelOrderQuantity
+            // 
+            labelOrderQuantity.AutoSize = true;
+            labelOrderQuantity.Location = new Point(636, 149);
+            labelOrderQuantity.Name = "labelOrderQuantity";
+            labelOrderQuantity.Size = new Size(84, 25);
+            labelOrderQuantity.TabIndex = 6;
+            labelOrderQuantity.Text = "Quantity:";
+            // 
+            // txtOrderQuantity
+            // 
+            txtOrderQuantity.Location = new Point(748, 149);
+            txtOrderQuantity.Name = "txtOrderQuantity";
+            txtOrderQuantity.Size = new Size(330, 31);
+            txtOrderQuantity.TabIndex = 7;
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(748, 200);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(150, 31);
+            textBox2.TabIndex = 8;
+            // 
+            // labelOrderUnitPrice
+            // 
+            labelOrderUnitPrice.AutoSize = true;
+            labelOrderUnitPrice.Location = new Point(636, 200);
+            labelOrderUnitPrice.Name = "labelOrderUnitPrice";
+            labelOrderUnitPrice.Size = new Size(90, 25);
+            labelOrderUnitPrice.TabIndex = 9;
+            labelOrderUnitPrice.Text = "Unit Price:";
+            // 
+            // dgvOrders
+            // 
+            dgvOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvOrders.Location = new Point(10, 60);
+            dgvOrders.Name = "dgvOrders";
+            dgvOrders.RowHeadersWidth = 62;
+            dgvOrders.Size = new Size(600, 350);
+            dgvOrders.TabIndex = 10;
+            // 
+            // labelOrderTitle
+            // 
+            labelOrderTitle.AutoSize = true;
+            labelOrderTitle.Location = new Point(10, 10);
+            labelOrderTitle.Name = "labelOrderTitle";
+            labelOrderTitle.Size = new Size(97, 25);
+            labelOrderTitle.TabIndex = 11;
+            labelOrderTitle.Text = "Orders List";
+            // 
+            // groupBoxOrderDetails
+            // 
+            groupBoxOrderDetails.Location = new Point(620, 60);
+            groupBoxOrderDetails.Name = "groupBoxOrderDetails";
+            groupBoxOrderDetails.Size = new Size(360, 500);
+            groupBoxOrderDetails.TabIndex = 12;
+            groupBoxOrderDetails.TabStop = false;
+            groupBoxOrderDetails.Text = "Order Details";
             // 
             // Forms
             // 
@@ -361,6 +500,9 @@
             groupBox1.PerformLayout();
             tabControlMain.ResumeLayout(false);
             tabPageInventory.ResumeLayout(false);
+            tabPageOrdering.ResumeLayout(false);
+            tabPageOrdering.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvOrders).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
@@ -394,6 +536,19 @@
         private TabPage tabPageInventory;
         private TabPage tabPageOrdering;
         private TabPage tabPageShipping;
+        private DataGridView dgvOrders;
+        private Label labelOrderUnitPrice;
+        private TextBox textBox2;
+        private TextBox txtOrderQuantity;
+        private Label labelOrderQuantity;
+        private TextBox txtOrderedBy;
+        private Label labelOrderedBy;
+        private TextBox textBox1;
+        private Label labelOrderItemName;
+        private TextBox txtOrderItemCode;
+        private Label labelOrderItemCode;
+        private GroupBox groupBoxOrderDetails;
+        private Label labelOrderTitle;
     }
 }
 

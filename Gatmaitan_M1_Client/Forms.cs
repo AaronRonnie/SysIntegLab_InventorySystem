@@ -201,5 +201,10 @@ namespace Gatmaitan_M1_Client
         {
 
         }
+
+        private void txtOrderItemCode_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
