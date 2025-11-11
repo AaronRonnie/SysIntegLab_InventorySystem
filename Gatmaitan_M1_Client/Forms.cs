@@ -174,7 +174,7 @@ namespace Gatmaitan_M1_Client
                     var searchLabel = new Label
                     {
                         Text = "🔍 Search:",
-                        Location = new Point(rightPosition - 80, 12),
+                        Location = new Point(rightPosition - 120, 12),
                         AutoSize = true,
                         Font = new Font("Segoe UI", 10, FontStyle.Bold),
                         ForeColor = PRIMARY_COLOR
