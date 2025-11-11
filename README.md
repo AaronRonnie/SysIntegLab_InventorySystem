@@ -4,19 +4,6 @@ A comprehensive guide for all features including the new Shipping Tab enhancemen
 
 ---
 
-## 📑 Quick Navigation
-
-- [Getting Started](#getting-started)
-- [Inventory Tab](#inventory-tab-guide)
-- [Orders Tab](#orders-tab-guide)
-- [Shipping Tab](#shipping-tab-guide--new-feature)
-- [Search Feature](#search-feature)
-- [Common Workflows](#common-workflows)
-- [Advanced Features](#advanced-features)
-- [FAQ & Troubleshooting](#faq--troubleshooting)
-
----
-
 ## 🚀 Getting Started
 
 ### Starting the Application
