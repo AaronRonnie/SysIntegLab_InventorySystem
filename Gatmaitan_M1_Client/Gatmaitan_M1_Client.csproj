@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -12,6 +12,20 @@
     <PackageReference Include="System.Net.Http.Json" Version="9.0.9" />
   </ItemGroup>
 
+  <!-- Forms Configuration - FIX FOR MSB3135 ERROR -->
+  <ItemGroup>
+    <Compile Update="Forms.Designer.cs">
+      <DependentUpon>Forms.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Forms.resx">
+      <DependentUpon>Forms.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- Resources Configuration -->
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
