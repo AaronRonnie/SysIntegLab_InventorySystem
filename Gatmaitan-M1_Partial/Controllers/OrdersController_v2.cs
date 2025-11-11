@@ -1,4 +1,4 @@
-﻿using Gatmaitan_M1_Partial.Data;
+using Gatmaitan_M1_Partial.Data;
 using Gatmaitan_M1_Partial.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,12 +29,12 @@ namespace Gatmaitan_M1_Partial.Controllers
         {
             if (string.IsNullOrEmpty(newOrder.ItemCode) || newOrder.OrderedQuantity <= 0)
                 return BadRequest("Invalid order details.");
-
+            
             newOrder.TotalPrice = newOrder.OrderedQuantity * newOrder.UnitPrice;
             newOrder.OrderedDate = DateTime.Now;
             newOrder.Id = orders.Count > 0 ? orders.Max(o => o.Id) + 1 : 1;
-
             orders.Add(newOrder);
+            
             return CreatedAtAction(nameof(GetOrder), new { id = newOrder.Id }, newOrder);
         }
 
@@ -43,14 +43,14 @@ namespace Gatmaitan_M1_Partial.Controllers
         {
             var order = orders.FirstOrDefault(o => o.Id == id);
             if (order == null) return NotFound();
-
+            
             order.ItemCode = updatedOrder.ItemCode;
             order.ItemName = updatedOrder.ItemName;
             order.OrderedBy = updatedOrder.OrderedBy;
             order.OrderedQuantity = updatedOrder.OrderedQuantity;
             order.UnitPrice = updatedOrder.UnitPrice;
             order.TotalPrice = updatedOrder.OrderedQuantity * updatedOrder.UnitPrice;
-
+            
             return NoContent();
         }
 
@@ -59,6 +59,7 @@ namespace Gatmaitan_M1_Partial.Controllers
         {
             var order = orders.FirstOrDefault(o => o.Id == id);
             if (order == null) return NotFound();
+            
             orders.Remove(order);
             return NoContent();
         }
