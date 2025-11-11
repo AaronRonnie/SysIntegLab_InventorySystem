@@ -1,0 +1,6 @@
+@Gatmaitan_M1_Partial_HostAddress = http://localhost:7211
+
+GET {{Gatmaitan_M1_Partial_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
