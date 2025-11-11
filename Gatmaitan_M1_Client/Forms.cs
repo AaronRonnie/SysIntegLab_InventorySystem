@@ -22,19 +22,14 @@ namespace Gatmaitan_M1_Client
         private Order selectedOrder = null;
         private Shipping selectedShipping = null;
 
-        // Search functionality
         private List<Item> allItems = new List<Item>();
         private List<Order> allOrders = new List<Order>();
         private List<Shipping> allShippings = new List<Shipping>();
 
-        // Color Scheme
-        private Color PRIMARY_COLOR = Color.FromArgb(41, 128, 185); // Blue
-        private Color SECONDARY_COLOR = Color.FromArgb(52, 152, 219); // Light Blue
-        private Color ACCENT_COLOR = Color.FromArgb(46, 204, 113); // Green
-        private Color DANGER_COLOR = Color.FromArgb(231, 76, 60); // Red
-        private Color DARK_BG = Color.FromArgb(44, 62, 80); // Dark Grey
-        private Color LIGHT_BG = Color.FromArgb(236, 240, 241); // Light Grey
-        private Color TEXT_COLOR = Color.FromArgb(52, 73, 94); // Dark Text
+        private Color PRIMARY_COLOR = Color.FromArgb(41, 128, 185);
+        private Color SECONDARY_COLOR = Color.FromArgb(52, 152, 219);
+        private Color LIGHT_BG = Color.FromArgb(236, 240, 241);
+        private Color TEXT_COLOR = Color.FromArgb(52, 73, 94);
 
         public Forms()
         {
@@ -50,32 +45,26 @@ namespace Gatmaitan_M1_Client
             {
                 ApplyTheme();
                 SetupAllDataGridViews();
-                AddSearchTextBoxes();
+                AddSearchBoxes();
                 await InitializeSampleDataAsync();
                 await RefreshAllData();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error during initialization: {ex.Message}\n\nMake sure the backend is running on https://localhost:7211/", "Initialization Error");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
-        // ==================== THEME & STYLING ====================
         private void ApplyTheme()
         {
             try
             {
-                // Form styling
                 this.BackColor = LIGHT_BG;
                 this.ForeColor = TEXT_COLOR;
-
-                // Apply to all controls
+                this.Font = new Font("Segoe UI", 10);
                 StyleAllControls(this);
             }
-            catch (Exception ex)
-            {
-                // Silently fail - theme is nice to have but not required
-            }
+            catch { }
         }
 
         private void StyleAllControls(Control parent)
@@ -84,45 +73,54 @@ namespace Gatmaitan_M1_Client
             {
                 foreach (Control control in parent.Controls)
                 {
-                    if (control is Button btn)
-                    {
-                        btn.BackColor = PRIMARY_COLOR;
-                        btn.ForeColor = Color.White;
-                        btn.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-                        btn.FlatStyle = FlatStyle.Flat;
-                        btn.FlatAppearance.BorderSize = 0;
-                        btn.Cursor = Cursors.Hand;
-                    }
-                    else if (control is TextBox txt)
-                    {
-                        txt.BackColor = Color.White;
-                        txt.ForeColor = TEXT_COLOR;
-                        txt.BorderStyle = BorderStyle.FixedSingle;
-                        txt.Font = new Font("Segoe UI", 10);
-                    }
-                    else if (control is ComboBox cmb)
-                    {
-                        cmb.BackColor = Color.White;
-                        cmb.ForeColor = TEXT_COLOR;
-                        cmb.Font = new Font("Segoe UI", 10);
-                    }
-                    else if (control is Label lbl)
-                    {
-                        lbl.ForeColor = TEXT_COLOR;
-                        lbl.Font = new Font("Segoe UI", 10);
-                    }
-
-                    // Recursively style child controls
+                    StyleControl(control);
                     if (control.HasChildren)
-                    {
                         StyleAllControls(control);
-                    }
                 }
             }
-            catch
+            catch { }
+        }
+
+        private void StyleControl(Control control)
+        {
+            try
             {
-                // Continue even if styling fails
+                if (control is Button btn)
+                {
+                    btn.BackColor = PRIMARY_COLOR;
+                    btn.ForeColor = Color.White;
+                    btn.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                    btn.FlatStyle = FlatStyle.Flat;
+                    btn.FlatAppearance.BorderSize = 0;
+                    btn.Cursor = Cursors.Hand;
+                    btn.Height = 38;
+                    btn.AutoSize = false;
+                }
+                else if (control is TextBox txt)
+                {
+                    txt.BackColor = Color.White;
+                    txt.ForeColor = TEXT_COLOR;
+                    txt.BorderStyle = BorderStyle.FixedSingle;
+                    txt.Font = new Font("Segoe UI", 10);
+                    txt.Height = 30;
+                }
+                else if (control is ComboBox cmb)
+                {
+                    cmb.BackColor = Color.White;
+                    cmb.ForeColor = TEXT_COLOR;
+                    cmb.Font = new Font("Segoe UI", 10);
+                }
+                else if (control is Label lbl)
+                {
+                    lbl.ForeColor = TEXT_COLOR;
+                    lbl.Font = new Font("Segoe UI", 10);
+                }
+                else if (control is DataGridView dgv)
+                {
+                    StyleDataGridView(dgv);
+                }
             }
+            catch { }
         }
 
         private void StyleDataGridView(DataGridView dgv)
@@ -134,154 +132,99 @@ namespace Gatmaitan_M1_Client
                 dgv.BackgroundColor = Color.White;
                 dgv.ForeColor = TEXT_COLOR;
                 dgv.RowHeadersVisible = false;
-                dgv.AllowUserToResizeRows = false;
-                dgv.RowTemplate.Height = 30;
-                dgv.AutoResizeRows();
+                dgv.RowTemplate.Height = 32;
+                dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
 
-                // Header styling
                 dgv.ColumnHeadersDefaultCellStyle.BackColor = PRIMARY_COLOR;
                 dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-                dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+                dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
                 dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 
-                // Row styling
                 dgv.DefaultCellStyle.BackColor = Color.White;
                 dgv.DefaultCellStyle.ForeColor = TEXT_COLOR;
                 dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10);
                 dgv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 dgv.DefaultCellStyle.Padding = new Padding(5);
 
-                // Alternating row colors
-                dgv.AlternatingRowsDefaultCellStyle.BackColor = LIGHT_BG;
-
-                // Grid lines
-                dgv.GridColor = Color.FromArgb(189, 195, 199);
+                dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 250, 255);
+                dgv.GridColor = Color.FromArgb(200, 210, 220);
                 dgv.BorderStyle = BorderStyle.FixedSingle;
 
-                // Selection styling
                 dgv.DefaultCellStyle.SelectionBackColor = SECONDARY_COLOR;
                 dgv.DefaultCellStyle.SelectionForeColor = Color.White;
             }
-            catch
-            {
-                // Continue even if styling fails
-            }
+            catch { }
         }
 
-        // ==================== SEARCH FUNCTIONALITY ====================
-        private void AddSearchTextBoxes()
+        private void AddSearchBoxes()
         {
             try
             {
-                // Find tab pages - more flexible approach
-                TabPage inventoryTab = this.Controls.OfType<TabControl>().FirstOrDefault()?.TabPages["tabPageInventory"] 
-                    ?? this.Controls.OfType<TabControl>().FirstOrDefault()?.TabPages[0];
-                
-                TabPage ordersTab = this.Controls.OfType<TabControl>().FirstOrDefault()?.TabPages["tabPageOrdering"] 
-                    ?? this.Controls.OfType<TabControl>().FirstOrDefault()?.TabPages[1];
-                
-                TabPage shippingTab = this.Controls.OfType<TabControl>().FirstOrDefault()?.TabPages["tabPageShipping"] 
-                    ?? this.Controls.OfType<TabControl>().FirstOrDefault()?.TabPages[2];
+                var tabControl = this.Controls.OfType<TabControl>().FirstOrDefault();
+                if (tabControl == null) return;
 
-                if (inventoryTab != null)
+                for (int tabIndex = 0; tabIndex < tabControl.TabPages.Count && tabIndex < 3; tabIndex++)
                 {
-                    var searchLabelInv = new Label
+                    TabPage tab = tabControl.TabPages[tabIndex];
+                    
+                    int rightPosition = tab.Width - 260;
+                    if (rightPosition < 400) rightPosition = 400;
+
+                    var searchLabel = new Label
                     {
                         Text = "🔍 Search:",
-                        Location = new System.Drawing.Point(10, 10),
+                        Location = new Point(rightPosition - 80, 12),
                         AutoSize = true,
-                        Font = new System.Drawing.Font("Segoe UI", 11, FontStyle.Bold),
+                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
                         ForeColor = PRIMARY_COLOR
                     };
 
-                    var searchBoxInv = new TextBox
+                    var searchBox = new TextBox
                     {
-                        Name = "txtSearchInventory",
-                        Location = new System.Drawing.Point(95, 8),
-                        Width = 200,
+                        Location = new Point(rightPosition, 10),
+                        Width = 250,
                         Height = 28,
-                        Font = new System.Drawing.Font("Segoe UI", 10),
+                        Font = new Font("Segoe UI", 10),
                         BorderStyle = BorderStyle.FixedSingle
                     };
-                    searchBoxInv.TextChanged += TxtSearchInventory_TextChanged;
 
-                    inventoryTab.Controls.Add(searchBoxInv);
-                    inventoryTab.Controls.Add(searchLabelInv);
-                }
+                    tab.Controls.Add(searchLabel);
+                    tab.Controls.Add(searchBox);
 
-                if (ordersTab != null)
-                {
-                    var searchLabelOrder = new Label
+                    if (tabIndex == 0)
                     {
-                        Text = "🔍 Search:",
-                        Location = new System.Drawing.Point(10, 10),
-                        AutoSize = true,
-                        Font = new System.Drawing.Font("Segoe UI", 11, FontStyle.Bold),
-                        ForeColor = PRIMARY_COLOR
-                    };
-
-                    var searchBoxOrder = new TextBox
+                        searchBox.Name = "txtSearchInventory";
+                        searchBox.TextChanged += TxtSearchInventory_TextChanged;
+                    }
+                    else if (tabIndex == 1)
                     {
-                        Name = "txtSearchOrders",
-                        Location = new System.Drawing.Point(95, 8),
-                        Width = 200,
-                        Height = 28,
-                        Font = new System.Drawing.Font("Segoe UI", 10),
-                        BorderStyle = BorderStyle.FixedSingle
-                    };
-                    searchBoxOrder.TextChanged += TxtSearchOrders_TextChanged;
-
-                    ordersTab.Controls.Add(searchBoxOrder);
-                    ordersTab.Controls.Add(searchLabelOrder);
-                }
-
-                if (shippingTab != null)
-                {
-                    var searchLabelShip = new Label
+                        searchBox.Name = "txtSearchOrders";
+                        searchBox.TextChanged += TxtSearchOrders_TextChanged;
+                    }
+                    else if (tabIndex == 2)
                     {
-                        Text = "🔍 Search:",
-                        Location = new System.Drawing.Point(10, 10),
-                        AutoSize = true,
-                        Font = new System.Drawing.Font("Segoe UI", 11, FontStyle.Bold),
-                        ForeColor = PRIMARY_COLOR
-                    };
-
-                    var searchBoxShip = new TextBox
-                    {
-                        Name = "txtSearchShipping",
-                        Location = new System.Drawing.Point(95, 8),
-                        Width = 200,
-                        Height = 28,
-                        Font = new System.Drawing.Font("Segoe UI", 10),
-                        BorderStyle = BorderStyle.FixedSingle
-                    };
-                    searchBoxShip.TextChanged += TxtSearchShipping_TextChanged;
-
-                    shippingTab.Controls.Add(searchBoxShip);
-                    shippingTab.Controls.Add(searchLabelShip);
+                        searchBox.Name = "txtSearchShipping";
+                        searchBox.TextChanged += TxtSearchShipping_TextChanged;
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                // Silently fail - search is nice to have but not required
-            }
+            catch { }
         }
 
-        // Search handlers
         private void TxtSearchInventory_TextChanged(object sender, EventArgs e)
         {
             var searchBox = sender as TextBox;
             if (searchBox == null) return;
 
             string searchTerm = searchBox.Text.ToLower();
-            var filteredItems = allItems.Where(x =>
+            var filtered = allItems.Where(x =>
                 (x.Name?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.Code?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.Brand?.ToLower() ?? "").Contains(searchTerm)
             ).ToList();
 
-            items = filteredItems;
+            items = filtered;
             if (dgvItems != null)
                 dgvItems.DataSource = new BindingSource { DataSource = items };
         }
@@ -292,13 +235,13 @@ namespace Gatmaitan_M1_Client
             if (searchBox == null) return;
 
             string searchTerm = searchBox.Text.ToLower();
-            var filteredOrders = allOrders.Where(x =>
+            var filtered = allOrders.Where(x =>
                 (x.ItemName?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.ItemCode?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.OrderedBy?.ToLower() ?? "").Contains(searchTerm)
             ).ToList();
 
-            orders = filteredOrders;
+            orders = filtered;
             if (dgvOrders != null)
                 dgvOrders.DataSource = new BindingSource { DataSource = orders };
         }
@@ -309,19 +252,18 @@ namespace Gatmaitan_M1_Client
             if (searchBox == null) return;
 
             string searchTerm = searchBox.Text.ToLower();
-            var filteredShippings = allShippings.Where(x =>
+            var filtered = allShippings.Where(x =>
                 (x.ItemName?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.ItemCode?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.ShippedTo?.ToLower() ?? "").Contains(searchTerm) ||
                 (x.Status?.ToLower() ?? "").Contains(searchTerm)
             ).ToList();
 
-            shippings = filteredShippings;
+            shippings = filtered;
             if (dgvShippings != null)
                 dgvShippings.DataSource = new BindingSource { DataSource = shippings };
         }
 
-        // ==================== INITIALIZATION ====================
         private void SetupAllDataGridViews()
         {
             SetupInventoryDataGridView();
@@ -329,45 +271,6 @@ namespace Gatmaitan_M1_Client
             SetupShippingDataGridView();
         }
 
-        private async Task InitializeSampleDataAsync()
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync("api/items");
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                    var existingItems = JsonSerializer.Deserialize<List<Item>>(content, options) ?? new List<Item>();
-
-                    if (existingItems.Count == 0)
-                    {
-                        var sampleShippings = new List<Shipping>
-                        {
-                            new Shipping { ItemCode = "ITM001", ItemName = "Laptop", OrderedBy = "John Doe", ShippedTo = "Manila", Status = "Pending", Quantity = 2 }
-                        };
-
-                        foreach (var ship in sampleShippings)
-                        {
-                            await _httpClient.PostAsJsonAsync("api/shippings", ship);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // Continue even if sample data fails
-            }
-        }
-
-        private async Task RefreshAllData()
-        {
-            await LoadItemsAsync();
-            await LoadOrdersAsync();
-            await LoadShippingsAsync();
-        }
-
-        // ==================== SETUP DATAGRIDS ====================
         private void SetupInventoryDataGridView()
         {
             try
@@ -378,21 +281,17 @@ namespace Gatmaitan_M1_Client
                 dgvItems.MultiSelect = false;
                 dgvItems.Columns.Clear();
 
-                // Column widths - FIXED
                 dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "Id", Width = 50, ReadOnly = true });
-                dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Name", DataPropertyName = "Name", Width = 120 });
+                dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Name", DataPropertyName = "Name", Width = 130 });
                 dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Code", DataPropertyName = "Code", Width = 100 });
                 dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Brand", DataPropertyName = "Brand", Width = 100 });
-                dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Unit Price", DataPropertyName = "UnitPrice", Width = 110 });
+                dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Unit Price", DataPropertyName = "UnitPrice", Width = 120 });
                 dgvItems.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Quantity", DataPropertyName = "Quantity", Width = 100 });
 
                 StyleDataGridView(dgvItems);
                 dgvItems.CellClick += DgvItems_CellClick;
             }
-            catch
-            {
-                // Continue even if setup fails
-            }
+            catch { }
         }
 
         private void SetupOrderDataGridView()
@@ -405,22 +304,18 @@ namespace Gatmaitan_M1_Client
                 dgvOrders.MultiSelect = false;
                 dgvOrders.Columns.Clear();
 
-                // Column widths - FIXED
                 dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "Id", Width = 50, ReadOnly = true });
                 dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Item Code", DataPropertyName = "ItemCode", Width = 100 });
                 dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Item Name", DataPropertyName = "ItemName", Width = 110 });
                 dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Ordered By", DataPropertyName = "OrderedBy", Width = 110 });
-                dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Quantity", DataPropertyName = "OrderedQuantity", Width = 85 });
+                dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Qty", DataPropertyName = "OrderedQuantity", Width = 70 });
                 dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Unit Price", DataPropertyName = "UnitPrice", Width = 100 });
                 dgvOrders.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Total", DataPropertyName = "TotalPrice", Width = 100 });
 
                 StyleDataGridView(dgvOrders);
                 dgvOrders.CellClick += DgvOrders_CellClick;
             }
-            catch
-            {
-                // Continue even if setup fails
-            }
+            catch { }
         }
 
         private void SetupShippingDataGridView()
@@ -433,7 +328,6 @@ namespace Gatmaitan_M1_Client
                 dgvShippings.MultiSelect = false;
                 dgvShippings.Columns.Clear();
 
-                // Column widths - FIXED
                 dgvShippings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "Id", Width = 50, ReadOnly = true });
                 dgvShippings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Item Code", DataPropertyName = "ItemCode", Width = 100 });
                 dgvShippings.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Item Name", DataPropertyName = "ItemName", Width = 110 });
@@ -444,13 +338,40 @@ namespace Gatmaitan_M1_Client
                 StyleDataGridView(dgvShippings);
                 dgvShippings.CellClick += DgvShippings_CellClick;
             }
-            catch
-            {
-                // Continue even if setup fails
-            }
+            catch { }
         }
 
-        // ==================== LOAD DATA ====================
+        private async Task InitializeSampleDataAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("api/items");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var existingItems = JsonSerializer.Deserialize<List<Item>>(content, options) ?? new List<Item>();
+                    if (existingItems.Count == 0)
+                    {
+                        var sampleShippings = new List<Shipping>
+                        {
+                            new Shipping { ItemCode = "ITM001", ItemName = "Laptop", OrderedBy = "John Doe", ShippedTo = "Manila", Status = "Pending", Quantity = 2 }
+                        };
+                        foreach (var ship in sampleShippings)
+                            await _httpClient.PostAsJsonAsync("api/shippings", ship);
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private async Task RefreshAllData()
+        {
+            await LoadItemsAsync();
+            await LoadOrdersAsync();
+            await LoadShippingsAsync();
+        }
+
         private async Task LoadItemsAsync()
         {
             try
@@ -462,15 +383,11 @@ namespace Gatmaitan_M1_Client
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     allItems = JsonSerializer.Deserialize<List<Item>>(content, options) ?? new List<Item>();
                     items = new List<Item>(allItems);
-
                     if (dgvItems != null)
                         dgvItems.DataSource = new BindingSource { DataSource = items };
                 }
             }
-            catch
-            {
-                // Continue even if loading fails
-            }
+            catch { }
         }
 
         private async Task LoadOrdersAsync()
@@ -484,15 +401,11 @@ namespace Gatmaitan_M1_Client
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     allOrders = JsonSerializer.Deserialize<List<Order>>(content, options) ?? new List<Order>();
                     orders = new List<Order>(allOrders);
-
                     if (dgvOrders != null)
                         dgvOrders.DataSource = new BindingSource { DataSource = orders };
                 }
             }
-            catch
-            {
-                // Continue even if loading fails
-            }
+            catch { }
         }
 
         private async Task LoadShippingsAsync()
@@ -506,18 +419,13 @@ namespace Gatmaitan_M1_Client
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     allShippings = JsonSerializer.Deserialize<List<Shipping>>(content, options) ?? new List<Shipping>();
                     shippings = new List<Shipping>(allShippings);
-
                     if (dgvShippings != null)
                         dgvShippings.DataSource = new BindingSource { DataSource = shippings };
                 }
             }
-            catch
-            {
-                // Continue even if loading fails
-            }
+            catch { }
         }
 
-        // ==================== INVENTORY TAB ====================
         private void DgvItems_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -525,11 +433,11 @@ namespace Gatmaitan_M1_Client
                 if (e.RowIndex >= 0 && dgvItems.Rows[e.RowIndex].DataBoundItem is Item item)
                 {
                     selectedItem = item;
-                    txtName.Text = item.Name ?? "";
-                    txtCode.Text = item.Code ?? "";
-                    txtBrand.Text = item.Brand ?? "";
-                    txtUnitPrice.Text = item.UnitPrice.ToString("F2");
-                    txtQuantity.Text = item.Quantity.ToString();
+                    if (txtName != null) txtName.Text = item.Name ?? "";
+                    if (txtCode != null) txtCode.Text = item.Code ?? "";
+                    if (txtBrand != null) txtBrand.Text = item.Brand ?? "";
+                    if (txtUnitPrice != null) txtUnitPrice.Text = item.UnitPrice.ToString("F2");
+                    if (txtQuantity != null) txtQuantity.Text = item.Quantity.ToString();
                 }
             }
             catch { }
@@ -537,21 +445,21 @@ namespace Gatmaitan_M1_Client
 
         private async void BtnAdd_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtCode.Text))
+            if (string.IsNullOrWhiteSpace(txtName?.Text) || string.IsNullOrWhiteSpace(txtCode?.Text))
             {
-                MessageBox.Show("Please enter Name and Code.");
+                MessageBox.Show("Enter Name and Code.");
                 return;
             }
 
-            if (!decimal.TryParse(txtUnitPrice.Text, out decimal price) || price <= 0)
+            if (!decimal.TryParse(txtUnitPrice?.Text, out decimal price) || price <= 0)
             {
-                MessageBox.Show("Please enter valid Unit Price.");
+                MessageBox.Show("Enter valid Unit Price.");
                 return;
             }
 
-            if (!int.TryParse(txtQuantity.Text, out int qty) || qty <= 0)
+            if (!int.TryParse(txtQuantity?.Text, out int qty) || qty <= 0)
             {
-                MessageBox.Show("Please enter valid Quantity.");
+                MessageBox.Show("Enter valid Quantity.");
                 return;
             }
 
@@ -559,7 +467,7 @@ namespace Gatmaitan_M1_Client
             {
                 Name = txtName.Text.Trim(),
                 Code = txtCode.Text.Trim(),
-                Brand = txtBrand.Text.Trim(),
+                Brand = txtBrand?.Text.Trim() ?? "",
                 UnitPrice = price,
                 Quantity = qty
             };
@@ -569,7 +477,7 @@ namespace Gatmaitan_M1_Client
                 var response = await _httpClient.PostAsJsonAsync("api/items", newItem);
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Item added successfully!");
+                    MessageBox.Show("Item added!");
                     await LoadItemsAsync();
                     ClearItemFields();
                 }
@@ -584,25 +492,25 @@ namespace Gatmaitan_M1_Client
         {
             if (selectedItem == null)
             {
-                MessageBox.Show("Please select an item to update.");
+                MessageBox.Show("Select an item.");
                 return;
             }
 
-            if (!decimal.TryParse(txtUnitPrice.Text, out decimal price) || price <= 0)
+            if (!decimal.TryParse(txtUnitPrice?.Text, out decimal price) || price <= 0)
             {
-                MessageBox.Show("Please enter valid Unit Price.");
+                MessageBox.Show("Valid Unit Price.");
                 return;
             }
 
-            if (!int.TryParse(txtQuantity.Text, out int qty) || qty < 0)
+            if (!int.TryParse(txtQuantity?.Text, out int qty) || qty < 0)
             {
-                MessageBox.Show("Please enter valid Quantity.");
+                MessageBox.Show("Valid Quantity.");
                 return;
             }
 
-            selectedItem.Name = txtName.Text.Trim();
-            selectedItem.Code = txtCode.Text.Trim();
-            selectedItem.Brand = txtBrand.Text.Trim();
+            selectedItem.Name = txtName?.Text.Trim() ?? "";
+            selectedItem.Code = txtCode?.Text.Trim() ?? "";
+            selectedItem.Brand = txtBrand?.Text.Trim() ?? "";
             selectedItem.UnitPrice = price;
             selectedItem.Quantity = qty;
 
@@ -611,7 +519,7 @@ namespace Gatmaitan_M1_Client
                 var response = await _httpClient.PutAsJsonAsync($"api/items/{selectedItem.Id}", selectedItem);
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Item updated!");
+                    MessageBox.Show("Updated!");
                     await LoadItemsAsync();
                     ClearItemFields();
                 }
@@ -626,11 +534,11 @@ namespace Gatmaitan_M1_Client
         {
             if (selectedItem == null)
             {
-                MessageBox.Show("Please select an item to delete.");
+                MessageBox.Show("Select an item.");
                 return;
             }
 
-            if (MessageBox.Show("Delete this item?", "Confirm", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            if (MessageBox.Show("Delete?", "Confirm", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
             try
@@ -638,7 +546,7 @@ namespace Gatmaitan_M1_Client
                 var response = await _httpClient.DeleteAsync($"api/items/{selectedItem.Id}");
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Item deleted!");
+                    MessageBox.Show("Deleted!");
                     await LoadItemsAsync();
                     ClearItemFields();
                 }
@@ -652,7 +560,7 @@ namespace Gatmaitan_M1_Client
         private async void BtnLoad_Click(object sender, EventArgs e)
         {
             await LoadItemsAsync();
-            MessageBox.Show("Items refreshed!");
+            MessageBox.Show("Refreshed!");
         }
 
         private void BtnCancelItem_Click(object sender, EventArgs e)
@@ -662,15 +570,14 @@ namespace Gatmaitan_M1_Client
 
         private void ClearItemFields()
         {
-            txtName.Clear();
-            txtCode.Clear();
-            txtBrand.Clear();
-            txtUnitPrice.Clear();
-            txtQuantity.Clear();
+            if (txtName != null) txtName.Clear();
+            if (txtCode != null) txtCode.Clear();
+            if (txtBrand != null) txtBrand.Clear();
+            if (txtUnitPrice != null) txtUnitPrice.Clear();
+            if (txtQuantity != null) txtQuantity.Clear();
             selectedItem = null;
         }
 
-        // ==================== ORDERS TAB ====================
         private void DgvOrders_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -678,39 +585,34 @@ namespace Gatmaitan_M1_Client
                 if (e.RowIndex >= 0 && dgvOrders.Rows[e.RowIndex].DataBoundItem is Order order)
                 {
                     selectedOrder = order;
-                    PopulateOrderFields(selectedOrder);
+                    if (txtOrderItemCode != null) txtOrderItemCode.Text = order.ItemCode ?? "";
+                    if (txtOrderItemName != null) txtOrderItemName.Text = order.ItemName ?? "";
+                    if (txtOrderedBy != null) txtOrderedBy.Text = order.OrderedBy ?? "";
+                    if (txtOrderQuantity != null) txtOrderQuantity.Text = order.OrderedQuantity.ToString();
+                    if (txtOrderUnitPrice != null) txtOrderUnitPrice.Text = order.UnitPrice.ToString("F2");
                 }
             }
             catch { }
         }
 
-        private void PopulateOrderFields(Order order)
-        {
-            txtOrderItemCode.Text = order.ItemCode ?? "";
-            txtOrderItemName.Text = order.ItemName ?? "";
-            txtOrderedBy.Text = order.OrderedBy ?? "";
-            txtOrderQuantity.Text = order.OrderedQuantity.ToString();
-            txtOrderUnitPrice.Text = order.UnitPrice.ToString("F2");
-        }
-
         private async void BtnAddOrder_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtOrderItemCode.Text) || string.IsNullOrWhiteSpace(txtOrderedBy.Text))
+            if (string.IsNullOrWhiteSpace(txtOrderItemCode?.Text) || string.IsNullOrWhiteSpace(txtOrderedBy?.Text))
             {
-                MessageBox.Show("Please enter Item Code and Ordered By.");
+                MessageBox.Show("Enter Item Code and Ordered By.");
                 return;
             }
 
-            if (!int.TryParse(txtOrderQuantity.Text, out int quantity) || quantity <= 0)
+            if (!int.TryParse(txtOrderQuantity?.Text, out int quantity) || quantity <= 0)
             {
-                MessageBox.Show("Please enter valid Quantity.");
+                MessageBox.Show("Enter valid Quantity.");
                 return;
             }
 
             var item = allItems.FirstOrDefault(x => x.Code == txtOrderItemCode.Text.Trim());
             if (item == null)
             {
-                MessageBox.Show("Item not found in inventory.");
+                MessageBox.Show("Item not found.");
                 return;
             }
 
@@ -720,17 +622,14 @@ namespace Gatmaitan_M1_Client
                 return;
             }
 
-            decimal unitPrice = item.UnitPrice;
-            decimal totalPrice = unitPrice * quantity;
-
             var newOrder = new Order
             {
                 ItemCode = txtOrderItemCode.Text.Trim(),
                 ItemName = item.Name,
                 OrderedBy = txtOrderedBy.Text.Trim(),
                 OrderedQuantity = quantity,
-                UnitPrice = unitPrice,
-                TotalPrice = totalPrice,
+                UnitPrice = item.UnitPrice,
+                TotalPrice = item.UnitPrice * quantity,
                 OrderedDate = DateTime.Now
             };
 
@@ -754,8 +653,7 @@ namespace Gatmaitan_M1_Client
                     };
 
                     await _httpClient.PostAsJsonAsync("api/shippings", newShipping);
-                    
-                    MessageBox.Show("Order created! Inventory reduced. Shipping auto-generated.\n\nClick 'Load Items' to see updated inventory.");
+                    MessageBox.Show("Order created!");
                     await LoadOrdersAsync();
                     await LoadShippingsAsync();
                     ClearOrderFields();
@@ -771,17 +669,17 @@ namespace Gatmaitan_M1_Client
         {
             if (selectedOrder == null)
             {
-                MessageBox.Show("Please select an order to update.");
+                MessageBox.Show("Select an order.");
                 return;
             }
 
-            if (!int.TryParse(txtOrderQuantity.Text, out int quantity) || quantity <= 0)
+            if (!int.TryParse(txtOrderQuantity?.Text, out int quantity) || quantity <= 0)
             {
-                MessageBox.Show("Please enter valid Quantity.");
+                MessageBox.Show("Valid Quantity.");
                 return;
             }
 
-            selectedOrder.OrderedBy = txtOrderedBy.Text.Trim();
+            selectedOrder.OrderedBy = txtOrderedBy?.Text.Trim() ?? "";
             selectedOrder.OrderedQuantity = quantity;
             selectedOrder.TotalPrice = selectedOrder.UnitPrice * quantity;
 
@@ -790,7 +688,7 @@ namespace Gatmaitan_M1_Client
                 var response = await _httpClient.PutAsJsonAsync($"api/orders/{selectedOrder.Id}", selectedOrder);
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Order updated!");
+                    MessageBox.Show("Updated!");
                     await LoadOrdersAsync();
                     ClearOrderFields();
                 }
@@ -805,37 +703,21 @@ namespace Gatmaitan_M1_Client
         {
             if (selectedOrder == null)
             {
-                MessageBox.Show("Please select an order to delete/cancel.");
+                MessageBox.Show("Select an order.");
                 return;
             }
 
-            var result = MessageBox.Show(
-                "Cancel this order?\n\nThis will:\n- Delete the order\n- Restore inventory quantity\n\nClick 'Load Items' after to see changes.",
-                "Cancel Order",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (result != DialogResult.Yes)
+            if (MessageBox.Show("Cancel?", "Confirm", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
             try
             {
                 var adjustment = new { ItemCode = selectedOrder.ItemCode, Quantity = selectedOrder.OrderedQuantity };
-                var restoreResponse = await _httpClient.PostAsJsonAsync("api/items/restore-quantity", adjustment);
-                
-                if (!restoreResponse.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Failed to restore inventory. Order not cancelled.");
-                    return;
-                }
-
-                var deleteResponse = await _httpClient.DeleteAsync($"api/orders/{selectedOrder.Id}");
-                if (deleteResponse.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Order cancelled! Inventory restored.\n\nClick 'Load Items' to see updated inventory.");
-                    await LoadOrdersAsync();
-                    ClearOrderFields();
-                }
+                await _httpClient.PostAsJsonAsync("api/items/restore-quantity", adjustment);
+                await _httpClient.DeleteAsync($"api/orders/{selectedOrder.Id}");
+                MessageBox.Show("Cancelled!");
+                await LoadOrdersAsync();
+                ClearOrderFields();
             }
             catch (Exception ex)
             {
@@ -846,7 +728,7 @@ namespace Gatmaitan_M1_Client
         private async void BtnLoadOrders_Click(object sender, EventArgs e)
         {
             await LoadOrdersAsync();
-            MessageBox.Show("Orders refreshed!");
+            MessageBox.Show("Refreshed!");
         }
 
         private void BtnCancelOrder_Click(object sender, EventArgs e)
@@ -856,15 +738,14 @@ namespace Gatmaitan_M1_Client
 
         private void ClearOrderFields()
         {
-            txtOrderItemCode.Clear();
-            txtOrderItemName.Clear();
-            txtOrderedBy.Clear();
-            txtOrderQuantity.Clear();
-            txtOrderUnitPrice.Clear();
+            if (txtOrderItemCode != null) txtOrderItemCode.Clear();
+            if (txtOrderItemName != null) txtOrderItemName.Clear();
+            if (txtOrderedBy != null) txtOrderedBy.Clear();
+            if (txtOrderQuantity != null) txtOrderQuantity.Clear();
+            if (txtOrderUnitPrice != null) txtOrderUnitPrice.Clear();
             selectedOrder = null;
         }
 
-        // ==================== SHIPPING TAB ====================
         private void DgvShippings_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -872,58 +753,31 @@ namespace Gatmaitan_M1_Client
                 if (e.RowIndex >= 0 && dgvShippings.Rows[e.RowIndex].DataBoundItem is Shipping shipping)
                 {
                     selectedShipping = shipping;
-                    PopulateShippingFields(selectedShipping);
+                    if (txtShipItemCode != null) txtShipItemCode.Text = shipping.ItemCode ?? "";
+                    if (txtShipItemName != null) txtShipItemName.Text = shipping.ItemName ?? "";
+                    if (txtShipOrderedBy != null) txtShipOrderedBy.Text = shipping.OrderedBy ?? "";
+                    if (txtShipTo != null) txtShipTo.Text = shipping.ShippedTo ?? "";
+                    if (cmbShippingStatus != null) cmbShippingStatus.SelectedItem = shipping.Status ?? "Pending";
                 }
             }
             catch { }
         }
 
-        private void PopulateShippingFields(Shipping shipping)
-        {
-            txtShipItemCode.Text = shipping.ItemCode ?? "";
-            txtShipItemName.Text = shipping.ItemName ?? "";
-            txtShipOrderedBy.Text = shipping.OrderedBy ?? "";
-            txtShipTo.Text = shipping.ShippedTo ?? "";
-            if (cmbShippingStatus != null)
-                cmbShippingStatus.SelectedItem = shipping.Status ?? "Pending";
-        }
-
         private void ClearShippingFields()
         {
-            txtShipItemCode.Clear();
-            txtShipItemName.Clear();
-            txtShipOrderedBy.Clear();
-            txtShipTo.Clear();
-            if (cmbShippingStatus != null)
-                cmbShippingStatus.SelectedIndex = -1;
+            if (txtShipItemCode != null) txtShipItemCode.Clear();
+            if (txtShipItemName != null) txtShipItemName.Clear();
+            if (txtShipOrderedBy != null) txtShipOrderedBy.Clear();
+            if (txtShipTo != null) txtShipTo.Clear();
+            if (cmbShippingStatus != null) cmbShippingStatus.SelectedIndex = -1;
             selectedShipping = null;
-        }
-
-        private async void BtnAddShipping_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(
-                "Shipping records are auto-generated when orders are created.\n\n" +
-                "Suggested workflow:\n" +
-                "1. Create an order in the Orders tab\n" +
-                "2. A shipping record is auto-created here\n" +
-                "3. Use UPDATE to fill in destination and status\n" +
-                "4. Use DELETE only if shipping is cancelled",
-                "How to Use Shipping Tab",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
         }
 
         private async void BtnUpdateShipping_Click(object sender, EventArgs e)
         {
             if (selectedShipping == null)
             {
-                MessageBox.Show("Please select a shipping record to update.");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtShipTo.Text) && cmbShippingStatus.SelectedItem?.ToString() != "Cancelled")
-            {
-                MessageBox.Show("Please enter destination (Ship To) or set status to Cancelled.");
+                MessageBox.Show("Select a record.");
                 return;
             }
 
@@ -932,54 +786,29 @@ namespace Gatmaitan_M1_Client
 
             if (newStatus == "Cancelled" && oldStatus != "Cancelled")
             {
-                var result = MessageBox.Show(
-                    "You are cancelling this shipment.\n\n" +
-                    "This will:\n" +
-                    "- Delete the associated order\n" +
-                    "- Restore inventory quantity\n\n" +
-                    "Click 'Load Orders' and 'Load Items' after to see changes.",
-                    "Cancel Shipment",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning);
-
-                if (result != DialogResult.Yes)
+                if (MessageBox.Show("Cancel shipment? Order will be deleted.", "Confirm", MessageBoxButtons.YesNo) != DialogResult.Yes)
                     return;
 
                 try
                 {
-                    var associatedOrder = allOrders.FirstOrDefault(o => 
+                    var order = allOrders.FirstOrDefault(o => 
                         o.ItemCode == selectedShipping.ItemCode && 
                         o.OrderedBy == selectedShipping.OrderedBy);
 
-                    if (associatedOrder != null)
+                    if (order != null)
                     {
                         var adjustment = new { ItemCode = selectedShipping.ItemCode, Quantity = selectedShipping.Quantity };
-                        var restoreResponse = await _httpClient.PostAsJsonAsync("api/items/restore-quantity", adjustment);
-                        
-                        if (!restoreResponse.IsSuccessStatusCode)
-                        {
-                            MessageBox.Show("Failed to restore inventory.");
-                            return;
-                        }
-
-                        var deleteOrderResponse = await _httpClient.DeleteAsync($"api/orders/{associatedOrder.Id}");
-                        
-                        if (!deleteOrderResponse.IsSuccessStatusCode)
-                        {
-                            MessageBox.Show("Failed to delete associated order.");
-                            return;
-                        }
+                        await _httpClient.PostAsJsonAsync("api/items/restore-quantity", adjustment);
+                        await _httpClient.DeleteAsync($"api/orders/{order.Id}");
                     }
 
-                    selectedShipping.ShippedTo = txtShipTo.Text.Trim();
+                    selectedShipping.ShippedTo = txtShipTo?.Text.Trim() ?? "";
                     selectedShipping.Status = "Cancelled";
 
-                    var updateResponse = await _httpClient.PutAsJsonAsync($"api/shippings/{selectedShipping.Id}", selectedShipping);
-                    if (updateResponse.IsSuccessStatusCode)
+                    var response = await _httpClient.PutAsJsonAsync($"api/shippings/{selectedShipping.Id}", selectedShipping);
+                    if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show("Shipment cancelled!\n\n" +
-                                      "Associated order deleted and inventory restored.\n\n" +
-                                      "Click 'Load Orders' in Orders tab and 'Load Items' in Inventory tab to see changes.");
+                        MessageBox.Show("Cancelled!");
                         await LoadShippingsAsync();
                         ClearShippingFields();
                     }
@@ -991,7 +820,7 @@ namespace Gatmaitan_M1_Client
             }
             else
             {
-                selectedShipping.ShippedTo = txtShipTo.Text.Trim();
+                selectedShipping.ShippedTo = txtShipTo?.Text.Trim() ?? "";
                 selectedShipping.Status = newStatus;
 
                 try
@@ -999,7 +828,7 @@ namespace Gatmaitan_M1_Client
                     var response = await _httpClient.PutAsJsonAsync($"api/shippings/{selectedShipping.Id}", selectedShipping);
                     if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show("Shipping record updated successfully!");
+                        MessageBox.Show("Updated!");
                         await LoadShippingsAsync();
                         ClearShippingFields();
                     }
@@ -1015,30 +844,19 @@ namespace Gatmaitan_M1_Client
         {
             if (selectedShipping == null)
             {
-                MessageBox.Show("Please select a shipping record to delete.");
+                MessageBox.Show("Select a record.");
                 return;
             }
 
-            var result = MessageBox.Show(
-                "Delete this shipping record?\n\n" +
-                "Only delete if the shipment is cancelled.\n" +
-                "For completed shipments, update the status instead.",
-                "Delete Shipping",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (result != DialogResult.Yes)
+            if (MessageBox.Show("Delete?", "Confirm", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
             try
             {
-                var response = await _httpClient.DeleteAsync($"api/shippings/{selectedShipping.Id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Shipping record deleted!");
-                    await LoadShippingsAsync();
-                    ClearShippingFields();
-                }
+                await _httpClient.DeleteAsync($"api/shippings/{selectedShipping.Id}");
+                MessageBox.Show("Deleted!");
+                await LoadShippingsAsync();
+                ClearShippingFields();
             }
             catch (Exception ex)
             {
@@ -1049,12 +867,17 @@ namespace Gatmaitan_M1_Client
         private async void BtnLoadShippings_Click(object sender, EventArgs e)
         {
             await LoadShippingsAsync();
-            MessageBox.Show("Shipping records refreshed!");
+            MessageBox.Show("Refreshed!");
         }
 
         private void BtnCancelShipping_Click(object sender, EventArgs e)
         {
             ClearShippingFields();
+        }
+
+        private async void BtnAddShipping_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Auto-created with orders.", "Info");
         }
     }
 }
